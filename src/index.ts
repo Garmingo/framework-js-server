@@ -51,7 +51,7 @@ export class Framework {
     while (!this.framework) {
       switch (this.config.Framework) {
         case "ESX Legacy":
-          this.framework = exports["es_extended"].getSharedObject();
+          this.framework = exports.es_extended.getSharedObject();
           break;
         case "ESX Infinity":
           emit(this.config.ESXEvent, (obj: any) => {
@@ -59,7 +59,7 @@ export class Framework {
           });
           break;
         case "QBCore":
-          this.framework = exports["qb-core"].GetCoreObject();
+          this.framework = exports["qb-core"]["GetCoreObject"]();
           break;
         case "Custom":
           this.framework = {};
