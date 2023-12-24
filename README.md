@@ -17,7 +17,3 @@ framework.getPlayerWalletMoney(playerId);
 framework.addPlayerWalletMoney(playerId, 500);
 ...
 ```
-
-## License
-
-https://github.com/Garmingo/Framework-Library/blob/main/LICENSE.md
