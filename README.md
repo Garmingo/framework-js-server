@@ -18,6 +18,14 @@ framework.addPlayerWalletMoney(playerId, 500);
 ...
 ```
 
-## License
+## Docs
+[Project setup and usage](https://docs.garmingo.com/purchase-and-installation/frameworks)
 
-https://github.com/Garmingo/Framework-Library/blob/main/LICENSE.md
+[Type reference](https://tsdocs.dev/docs/@garmingo/framework-js-server/)
+
+## Other packages
+https://github.com/Garmingo/framework-js-client
+
+https://github.com/Garmingo/FrameworkLibraryNET
+
+https://github.com/Garmingo/framework-lua
