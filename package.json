@@ -1,6 +1,6 @@
 {
   "name": "@garmingo/framework-js-server",
-  "version": "1.0.4",
+  "version": "1.1.0",
   "description": "TypeScript version of Framework library (server version)",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
