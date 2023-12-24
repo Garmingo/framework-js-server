@@ -26,5 +26,9 @@
   },
   "dependencies": {
     "strip-json-comments": "^5.0.1"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
   }
 }
