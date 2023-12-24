@@ -17,3 +17,6 @@ framework.getPlayerWalletMoney(playerId);
 framework.addPlayerWalletMoney(playerId, 500);
 ...
 ```
+
+## Docs
+https://docs.garmingo.com/purchase-and-installation/frameworks
