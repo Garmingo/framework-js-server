@@ -5,15 +5,46 @@
  */
 import stripJsonComments from "strip-json-comments";
 
+/**
+ * Settings for the framework configuration.
+ * Are loaded from framework.json
+ */
 export type FrameworkConfig = {
+  /**
+   * Whether to automatically detect the framework
+   */
   AutoDetect: boolean;
+  /**
+   * The framework to use
+   */
   Framework: "None" | "QBCore" | "ESX Legacy" | "ESX Infinity" | "Custom";
+  /**
+   * The event to listen to for ESX Infinity
+   */
   ESXEvent: string;
+  /**
+   * The resource that exports the custom functions
+   */
   ExportResource: string;
 };
 
+/**
+ * Framework class
+ * Used to interact with the framework
+ */
 export class Framework {
+  /**
+   * Local instance of the framework config
+   */
   private config: FrameworkConfig;
+  /**
+   * Local instance of the framework object
+   * This is the object that is returned by the framework
+   * It is used to interact with the framework
+   * It is initialized in the constructor
+   * It is null if the framework is not initialized and just an empty object if 'None' or 'Custom' is selected
+   * Due to the nature of the framework, this object is of type 'any' since the type is different for each framework
+   */
   private framework: any;
 
   constructor() {
@@ -79,7 +110,7 @@ export class Framework {
 
   /**
    * Checks if the framework is initialized
-   * @returns {boolean} whether the framework is initialized
+   * @returns {boolean} Whether the framework is initialized
    */
   public isInitialized(): boolean {
     return !!this.framework;
@@ -87,7 +118,10 @@ export class Framework {
 
   /**
    * Returns the raw framework object
-   * @returns {any} framework
+   * This is the object that is returned by the framework
+   * It is any since the type is different for each framework
+   * It is null if the framework is not initialized and just an empty object if 'None' or 'Custom' is selected
+   * @returns {any} Raw framework object
    */
   public getFramework(): any {
     return this.framework;
@@ -95,7 +129,9 @@ export class Framework {
 
   /**
    * Returns the framework name
-   * @returns {string} framework name
+   * It matches the FrameworkConfig.Framework exactly
+   * Note: This value is case sensitive
+   * @returns {string} Name of the currently selected framework
    */
   public getFrameworkName(): string {
     return this.config.Framework;
@@ -103,8 +139,9 @@ export class Framework {
 
   /**
    * Get the wallet money of a player
-   * @param player player id
-   * @returns {number} wallet money
+   * Note: This function only uses the default money system of the frameworks and may not work with custom money systems (for example those who utilize items as money)
+   * @param player Server ID of the player
+   * @returns {number} The wallet money of the player
    */
   public getPlayerWalletMoney(player: number): number {
     switch (this.config.Framework) {
@@ -126,9 +163,9 @@ export class Framework {
 
   /**
    * Get the money of a specific account of a player
-   * @param player player id
-   * @param account account name (e.g. bank)
-   * @returns {number} account money
+   * @param player Server ID of the player
+   * @param account Name of the account (e.g. bank)
+   * @returns {number} Amount of money in the account
    */
   public getPlayerAccountMoney(player: number, account: string): number {
     switch (this.config.Framework) {
@@ -159,9 +196,9 @@ export class Framework {
 
   /**
    * Add money to the wallet of a player
-   * @param player player id
-   * @param amount amount to add
-   * @returns {void} void
+   * Note: This function only uses the default money system of the frameworks and may not work with custom money systems (for example those who utilize items as money)
+   * @param player Server ID of the player
+   * @param amount Amount to add
    */
   public addPlayerWalletMoney(player: number, amount: number): void {
     switch (this.config.Framework) {
@@ -191,9 +228,9 @@ export class Framework {
 
   /**
    * Remove money from the wallet of a player
-   * @param player player id
-   * @param amount amount to remove
-   * @returns {void} void
+   * Note: This function only uses the default money system of the frameworks and may not work with custom money systems (for example those who utilize items as money)
+   * @param player Server ID of the player
+   * @param amount Amount to remove
    */
   public removePlayerWalletMoney(player: number, amount: number): void {
     switch (this.config.Framework) {
@@ -223,10 +260,9 @@ export class Framework {
 
   /**
    * Add money to a specific account of a player
-   * @param player player id
-   * @param account account name (e.g. bank)
-   * @param amount amount to add
-   * @returns {void} void
+   * @param player Server ID of the player
+   * @param account Name of the account (e.g. bank)
+   * @param amount Amount to add
    */
   public addPlayerAccountMoney(player: number, account: string, amount: number): void {
     switch (this.config.Framework) {
@@ -257,10 +293,9 @@ export class Framework {
 
   /**
    * Remove money from a specific account of a player
-   * @param player player id
-   * @param account account name (e.g. bank)
-   * @param amount amount to remove
-   * @returns {void} void
+   * @param player Server ID of the player
+   * @param account Name of the account (e.g. bank)
+   * @param amount Amount to remove
    */
   public removePlayerAccountMoney(player: number, account: string, amount: number): void {
     switch (this.config.Framework) {
@@ -291,10 +326,10 @@ export class Framework {
 
   /**
    * Add an item to the inventory of a player
-   * @param player player id
-   * @param item item name
-   * @param amount amount to add
-   * @returns {void} void
+   * Note: This function only uses the default inventory system of the frameworks and may not work with custom inventory systems
+   * @param player Server ID of the player
+   * @param item Name of the item to add
+   * @param amount Amount of the item to add
    */
   public addPlayerInventoryItem(player: number, item: string, amount: number): void {
     if (amount <= 0) {
@@ -331,10 +366,10 @@ export class Framework {
 
   /**
    * Remove an item from the inventory of a player
-   * @param player player id
-   * @param item item name
-   * @param amount amount to remove
-   * @returns {void} void
+   * Note: This function only uses the default inventory system of the frameworks and may not work with custom inventory systems
+   * @param player Server ID of the player
+   * @param item Name of the item to remove
+   * @param amount Amount of the item to remove
    */
   public removePlayerInventoryItem(player: number, item: string, amount: number): void {
     if (amount <= 0) {
@@ -371,9 +406,11 @@ export class Framework {
 
   /**
    * Get the amount of an item in the inventory of a player
-   * @param player player id
-   * @param item item name
-   * @returns {number} amount of item
+   * Returns 0 if the item is not in the inventory
+   * Note: This function only uses the default inventory system of the frameworks and may not work with custom inventory systems
+   * @param player Server ID of the player
+   * @param item The name of the item to get the amount of
+   * @returns {number} Amount of the item in the inventory
    */
   public getPlayerInventoryItemCount(player: number, item: string): number {
     switch (this.config.Framework) {
