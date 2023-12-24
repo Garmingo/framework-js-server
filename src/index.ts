@@ -69,8 +69,53 @@ export class Framework {
 
     if (this.config.AutoDetect) {
       console.log(
-        "WARNING: AutoDetect is currently not supported in this build. Please set AutoDetect to false in framework.json and select a framework manually."
+        "WARNING: AutoDetect is currently experimantal in this build. There might be bugs. Please report them in the GitHub repository (https://github.com/Garmingo/framework-js-server)."
       );
+
+      /* -- Check for ESX Legacy -- */
+      try {
+        if (exports.es_extended.getSharedObject()) {
+          this.config.Framework = "ESX Legacy";
+          console.log("ESX Legacy detected. Initializing...");
+        }
+      } catch (e) {}
+      /* -- Check for ESX Legacy -- */
+
+      /* -- Check for QBCore -- */
+      if (this.config.Framework === "None") {
+        try {
+          if (exports["qb-core"]["GetCoreObject"]()) {
+            this.config.Framework = "QBCore";
+            console.log("QBCore detected. Initializing...");
+          }
+        } catch (e) {}
+      }
+      /* -- Check for QBCore -- */
+
+      /* -- Check for Custom Framework -- */
+      if (this.config.Framework === "None") {
+        try {
+          if (exports[this.config.ExportResource].GetPlayerJobName()) {
+            this.config.Framework = "Custom";
+            console.log("Custom framework detected. Initializing...");
+          }
+        } catch (e) {}
+      }
+      /* -- Check for Custom Framework -- */
+
+      /* -- Check for ESX Infinity -- */
+      if (this.config.Framework === "None") {
+        try {
+          emit(this.config.ESXEvent, (obj: any) => {
+            this.framework = obj;
+          });
+          if (this.framework) {
+            this.config.Framework = "ESX Infinity";
+            console.log("ESX Infinity detected. Initializing...");
+          }
+        } catch (e) {}
+      }
+      /* -- Check for ESX Infinity -- */
     }
 
     if (this.config.Framework === "None") {
@@ -203,17 +248,16 @@ export class Framework {
   public addPlayerWalletMoney(player: number, amount: number): void {
     switch (this.config.Framework) {
       case "ESX Legacy":
-        this.framework
-          .GetPlayerFromId(player)
-          .addMoney(amount);
+        this.framework.GetPlayerFromId(player).addMoney(amount);
         break;
       case "ESX Infinity":
-        this.framework
-          .GetPlayerFromId(player)
-          .addMoney(amount);
+        this.framework.GetPlayerFromId(player).addMoney(amount);
         break;
       case "QBCore":
-        this.framework.Functions.GetPlayer(player).Functions.AddMoney("cash", amount);
+        this.framework.Functions.GetPlayer(player).Functions.AddMoney(
+          "cash",
+          amount
+        );
         break;
       case "Custom":
         exports[this.config.ExportResource].AddPlayerWalletMoney(
@@ -235,17 +279,16 @@ export class Framework {
   public removePlayerWalletMoney(player: number, amount: number): void {
     switch (this.config.Framework) {
       case "ESX Legacy":
-        this.framework
-          .GetPlayerFromId(player)
-          .removeMoney(amount);
+        this.framework.GetPlayerFromId(player).removeMoney(amount);
         break;
       case "ESX Infinity":
-        this.framework
-          .GetPlayerFromId(player)
-          .removeMoney(amount);
+        this.framework.GetPlayerFromId(player).removeMoney(amount);
         break;
       case "QBCore":
-        this.framework.Functions.GetPlayer(player).Functions.RemoveMoney("cash", amount);
+        this.framework.Functions.GetPlayer(player).Functions.RemoveMoney(
+          "cash",
+          amount
+        );
         break;
       case "Custom":
         exports[this.config.ExportResource].RemovePlayerWalletMoney(
@@ -264,20 +307,23 @@ export class Framework {
    * @param account Name of the account (e.g. bank)
    * @param amount Amount to add
    */
-  public addPlayerAccountMoney(player: number, account: string, amount: number): void {
+  public addPlayerAccountMoney(
+    player: number,
+    account: string,
+    amount: number
+  ): void {
     switch (this.config.Framework) {
       case "ESX Legacy":
-        this.framework
-          .GetPlayerFromId(player)
-          .addAccountMoney(account, amount);
+        this.framework.GetPlayerFromId(player).addAccountMoney(account, amount);
         break;
       case "ESX Infinity":
-        this.framework
-          .GetPlayerFromId(player)
-          .addAccountMoney(account, amount);
+        this.framework.GetPlayerFromId(player).addAccountMoney(account, amount);
         break;
       case "QBCore":
-        this.framework.Functions.GetPlayer(player).Functions.AddMoney(account, amount);
+        this.framework.Functions.GetPlayer(player).Functions.AddMoney(
+          account,
+          amount
+        );
         break;
       case "Custom":
         exports[this.config.ExportResource].AddPlayerAccountMoney(
@@ -297,7 +343,11 @@ export class Framework {
    * @param account Name of the account (e.g. bank)
    * @param amount Amount to remove
    */
-  public removePlayerAccountMoney(player: number, account: string, amount: number): void {
+  public removePlayerAccountMoney(
+    player: number,
+    account: string,
+    amount: number
+  ): void {
     switch (this.config.Framework) {
       case "ESX Legacy":
         this.framework
@@ -310,7 +360,10 @@ export class Framework {
           .removeAccountMoney(account, amount);
         break;
       case "QBCore":
-        this.framework.Functions.GetPlayer(player).Functions.RemoveMoney(account, amount);
+        this.framework.Functions.GetPlayer(player).Functions.RemoveMoney(
+          account,
+          amount
+        );
         break;
       case "Custom":
         exports[this.config.ExportResource].RemovePlayerAccountMoney(
@@ -331,24 +384,27 @@ export class Framework {
    * @param item Name of the item to add
    * @param amount Amount of the item to add
    */
-  public addPlayerInventoryItem(player: number, item: string, amount: number): void {
+  public addPlayerInventoryItem(
+    player: number,
+    item: string,
+    amount: number
+  ): void {
     if (amount <= 0) {
       return;
     }
 
     switch (this.config.Framework) {
       case "ESX Legacy":
-        this.framework
-          .GetPlayerFromId(player)
-          .addInventoryItem(item, amount);
+        this.framework.GetPlayerFromId(player).addInventoryItem(item, amount);
         break;
       case "ESX Infinity":
-        this.framework
-          .GetPlayerFromId(player)
-          .addInventoryItem(item, amount);
+        this.framework.GetPlayerFromId(player).addInventoryItem(item, amount);
         break;
       case "QBCore":
-        this.framework.Functions.GetPlayer(player).Functions.AddItem(item, amount);
+        this.framework.Functions.GetPlayer(player).Functions.AddItem(
+          item,
+          amount
+        );
         break;
       case "Custom":
         exports[this.config.ExportResource].AddPlayerInventoryItem(
@@ -371,7 +427,11 @@ export class Framework {
    * @param item Name of the item to remove
    * @param amount Amount of the item to remove
    */
-  public removePlayerInventoryItem(player: number, item: string, amount: number): void {
+  public removePlayerInventoryItem(
+    player: number,
+    item: string,
+    amount: number
+  ): void {
     if (amount <= 0) {
       return;
     }
@@ -388,7 +448,10 @@ export class Framework {
           .removeInventoryItem(item, amount);
         break;
       case "QBCore":
-        this.framework.Functions.GetPlayer(player).Functions.RemoveItem(item, amount);
+        this.framework.Functions.GetPlayer(player).Functions.RemoveItem(
+          item,
+          amount
+        );
         break;
       case "Custom":
         exports[this.config.ExportResource].RemovePlayerInventoryItem(
@@ -415,15 +478,15 @@ export class Framework {
   public getPlayerInventoryItemCount(player: number, item: string): number {
     switch (this.config.Framework) {
       case "ESX Legacy":
-        return this.framework
-          .GetPlayerFromId(player)
-          .getInventoryItem(item).count;
+        return this.framework.GetPlayerFromId(player).getInventoryItem(item)
+          .count;
       case "ESX Infinity":
-        return this.framework
-          .GetPlayerFromId(player)
-          .getInventoryItem(item).count;
+        return this.framework.GetPlayerFromId(player).getInventoryItem(item)
+          .count;
       case "QBCore":
-        return this.framework.Functions.GetPlayer(player).Functions.GetItemByName(item).amount;
+        return this.framework.Functions.GetPlayer(
+          player
+        ).Functions.GetItemByName(item).amount;
       case "Custom":
         return exports[this.config.ExportResource].GetPlayerInventoryItemCount(
           player,
@@ -433,5 +496,4 @@ export class Framework {
         return 0;
     }
   }
-
 }
