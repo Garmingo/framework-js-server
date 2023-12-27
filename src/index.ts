@@ -116,6 +116,7 @@ export class Framework {
         } catch (e) {}
       }
       /* -- Check for ESX Infinity -- */
+      SaveResourceFile(GetCurrentResourceName(), "framework.json", JSON.stringify(this.config, null, 2), -1);
     }
 
     if (this.config.Framework === "None") {
