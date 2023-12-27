@@ -76,6 +76,7 @@ export class Framework {
       try {
         if (exports.es_extended.getSharedObject()) {
           this.config.Framework = "ESX Legacy";
+          this.config.AutoDetect = false;
           console.log("ESX Legacy detected. Initializing...");
         }
       } catch (e) {}
@@ -86,6 +87,7 @@ export class Framework {
         try {
           if (exports["qb-core"]["GetCoreObject"]()) {
             this.config.Framework = "QBCore";
+            this.config.AutoDetect = false;
             console.log("QBCore detected. Initializing...");
           }
         } catch (e) {}
@@ -97,6 +99,7 @@ export class Framework {
         try {
           if (exports[this.config.ExportResource].GetPlayerJobName()) {
             this.config.Framework = "Custom";
+            this.config.AutoDetect = false;
             console.log("Custom framework detected. Initializing...");
           }
         } catch (e) {}
@@ -111,6 +114,7 @@ export class Framework {
           });
           if (this.framework) {
             this.config.Framework = "ESX Infinity";
+            this.config.AutoDetect = false;
             console.log("ESX Infinity detected. Initializing...");
           }
         } catch (e) {}
