@@ -23,10 +23,18 @@ export type FrameworkConfig = {
    */
   ESXEvent: string;
   /**
-   * The resource that exports the custom functions
+   * The resource that EXPORTS the custom functions
    */
   ExportResource: string;
 };
+
+/**
+ * Global exports
+ *
+ * @remarks
+ * This is a workaround to force accessing the global exports object instead of creating local ones in certain build tools.
+ */
+const EXPORTS = global.exports;
 
 /**
  * Framework class
@@ -74,7 +82,7 @@ export class Framework {
 
       /* -- Check for ESX Legacy -- */
       try {
-        if (exports.es_extended.getSharedObject()) {
+        if (EXPORTS.es_extended.getSharedObject()) {
           this.config.Framework = "ESX Legacy";
           this.config.AutoDetect = false;
           console.log("ESX Legacy detected. Initializing...");
@@ -85,7 +93,7 @@ export class Framework {
       /* -- Check for QBCore -- */
       if (this.config.Framework === "None") {
         try {
-          if (exports["qb-core"]["GetCoreObject"]()) {
+          if (EXPORTS["qb-core"]["GetCoreObject"]()) {
             this.config.Framework = "QBCore";
             this.config.AutoDetect = false;
             console.log("QBCore detected. Initializing...");
@@ -97,7 +105,7 @@ export class Framework {
       /* -- Check for Custom Framework -- */
       if (this.config.Framework === "None") {
         try {
-          if (exports[this.config.ExportResource].GetPlayerJobName()) {
+          if (EXPORTS[this.config.ExportResource].GetPlayerJobName()) {
             this.config.Framework = "Custom";
             this.config.AutoDetect = false;
             console.log("Custom framework detected. Initializing...");
@@ -120,7 +128,12 @@ export class Framework {
         } catch (e) {}
       }
       /* -- Check for ESX Infinity -- */
-      SaveResourceFile(GetCurrentResourceName(), "framework.json", JSON.stringify(this.config, null, 2), -1);
+      SaveResourceFile(
+        GetCurrentResourceName(),
+        "framework.json",
+        JSON.stringify(this.config, null, 2),
+        -1
+      );
     }
 
     if (this.config.Framework === "None") {
@@ -132,7 +145,7 @@ export class Framework {
     while (!this.framework) {
       switch (this.config.Framework) {
         case "ESX Legacy":
-          this.framework = exports.es_extended.getSharedObject();
+          this.framework = EXPORTS.es_extended.getSharedObject();
           break;
         case "ESX Infinity":
           emit(this.config.ESXEvent, (obj: any) => {
@@ -140,7 +153,7 @@ export class Framework {
           });
           break;
         case "QBCore":
-          this.framework = exports["qb-core"]["GetCoreObject"]();
+          this.framework = EXPORTS["qb-core"]["GetCoreObject"]();
           break;
         case "Custom":
           this.framework = {};
@@ -205,7 +218,7 @@ export class Framework {
           this.framework.Functions.GetPlayer(player).PlayerData.money.cash
         );
       case "Custom":
-        return exports[this.config.ExportResource].GetPlayerWalletMoney(player);
+        return EXPORTS[this.config.ExportResource].GetPlayerWalletMoney(player);
       default:
         return 0;
     }
@@ -235,7 +248,7 @@ export class Framework {
           account
         ];
       case "Custom":
-        return exports[this.config.ExportResource].GetPlayerAccountMoney(
+        return EXPORTS[this.config.ExportResource].GetPlayerAccountMoney(
           player,
           account
         );
@@ -265,7 +278,7 @@ export class Framework {
         );
         break;
       case "Custom":
-        exports[this.config.ExportResource].AddPlayerWalletMoney(
+        EXPORTS[this.config.ExportResource].AddPlayerWalletMoney(
           player,
           amount
         );
@@ -296,7 +309,7 @@ export class Framework {
         );
         break;
       case "Custom":
-        exports[this.config.ExportResource].RemovePlayerWalletMoney(
+        EXPORTS[this.config.ExportResource].RemovePlayerWalletMoney(
           player,
           amount
         );
@@ -331,7 +344,7 @@ export class Framework {
         );
         break;
       case "Custom":
-        exports[this.config.ExportResource].AddPlayerAccountMoney(
+        EXPORTS[this.config.ExportResource].AddPlayerAccountMoney(
           player,
           amount,
           account
@@ -371,7 +384,7 @@ export class Framework {
         );
         break;
       case "Custom":
-        exports[this.config.ExportResource].RemovePlayerAccountMoney(
+        EXPORTS[this.config.ExportResource].RemovePlayerAccountMoney(
           player,
           amount,
           account
@@ -412,7 +425,7 @@ export class Framework {
         );
         break;
       case "Custom":
-        exports[this.config.ExportResource].AddPlayerInventoryItem(
+        EXPORTS[this.config.ExportResource].AddPlayerInventoryItem(
           player,
           item,
           amount
@@ -459,7 +472,7 @@ export class Framework {
         );
         break;
       case "Custom":
-        exports[this.config.ExportResource].RemovePlayerInventoryItem(
+        EXPORTS[this.config.ExportResource].RemovePlayerInventoryItem(
           player,
           item,
           amount
@@ -493,7 +506,7 @@ export class Framework {
           player
         ).Functions.GetItemByName(item).amount;
       case "Custom":
-        return exports[this.config.ExportResource].GetPlayerInventoryItemCount(
+        return EXPORTS[this.config.ExportResource].GetPlayerInventoryItemCount(
           player,
           item
         );
