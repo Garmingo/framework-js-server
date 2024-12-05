@@ -161,6 +161,8 @@ export class Framework {
       }
     }
     /* -- Initialize Framework -- */
+
+    console.log(`Framework: ${this.config.Framework} initialized.`);
   }
 
   /**
